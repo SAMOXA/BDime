@@ -10,14 +10,14 @@ dbDriver::dbDriver(QObject *parent) :
 void dbDriver::init(const QString &path)
 {
     if(! QFile::exists(path)){
-        emit SIGNALdbMessage(QString::fromLocal8Bit("Была создана новая база данных"));
+        emit SIGNALdbMessage(QString::fromLocal8Bit("Р‘С‹Р»Р° СЃРѕР·РґР°РЅР° РЅРѕРІР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С…"));
     }else{
         /*
         QMessageBox msgBox;
-        msgBox.setWindowTitle(QString::fromLocal8Bit("Перезапись БД"));
-        msgBox.setText(QString::fromLocal8Bit("Перезаписать БД?"));
+        msgBox.setWindowTitle(QString::fromLocal8Bit("РџРµСЂРµР·Р°РїРёСЃСЊ Р‘Р”"));
+        msgBox.setText(QString::fromLocal8Bit("РџРµСЂРµР·Р°РїРёСЃР°С‚СЊ Р‘Р”?"));
         msgBox.setIcon(QMessageBox::Information);
-        msgBox.setInformativeText(QString::fromLocal8Bit("Обнаружена ранее созданая база данных перезаписать её для нового голосования?"));
+        msgBox.setInformativeText(QString::fromLocal8Bit("РћР±РЅР°СЂСѓР¶РµРЅР° СЂР°РЅРµРµ СЃРѕР·РґР°РЅР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С… РїРµСЂРµР·Р°РїРёСЃР°С‚СЊ РµС‘ РґР»СЏ РЅРѕРІРѕРіРѕ РіРѕР»РѕСЃРѕРІР°РЅРёСЏ?"));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Cancel);
         int ret = msgBox.exec();
@@ -26,7 +26,7 @@ void dbDriver::init(const QString &path)
                 break;
             case QMessageBox::Ok:
                 QFile(path).remove();
-                emit SIGNALdbMessage(QString::fromLocal8Bit("База данных была перезаписана"));
+                emit SIGNALdbMessage(QString::fromLocal8Bit("Р‘Р°Р·Р° РґР°РЅРЅС‹С… Р±С‹Р»Р° РїРµСЂРµР·Р°РїРёСЃР°РЅР°"));
                 break;
             default:
                 break;
@@ -36,7 +36,7 @@ void dbDriver::init(const QString &path)
     dbase.setDatabaseName(path);
     bool globalError = false;
     if(!dbase.open()){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при открытии базы данных") + dbase.lastError().text());
+        emit SIGNALdbError(QString::fromLocal8Bit("РћС‰РёР±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё Р±Р°Р·С‹ РґР°РЅРЅС‹С…") + dbase.lastError().text());
         globalError = true;
     }
     QSqlQuery a_query;
@@ -46,11 +46,11 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при создании таблицы vendors") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromLocal8Bit("РћС‰РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё С‚Р°Р±Р»РёС†С‹ vendors") + a_query.lastError().text());
         globalError = true;
     }
     if(!a_query.exec("PRAGMA foreign_keys = ON;")){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при установке связных ключей") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromLocal8Bit("РћС‰РёР±РєР° РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ СЃРІСЏР·РЅС‹С… РєР»СЋС‡РµР№") + a_query.lastError().text());
         globalError = true;
     }
     str = "CREATE TABLE IF NOT EXISTS main ("
@@ -64,7 +64,7 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при создании таблицы main") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromLocal8Bit("РћС‰РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё С‚Р°Р±Р»РёС†С‹ main") + a_query.lastError().text());
         globalError = true;
     }
     dbModel = new QSqlRelationalTableModel;
@@ -73,7 +73,7 @@ void dbDriver::init(const QString &path)
     dbModel->setRelation(4, QSqlRelation("vendors", "id", "name"));
     dbModel->select();
     if(globalError){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка базы данных"));
+        emit SIGNALdbError(QString::fromLocal8Bit("РћС‰РёР±РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…"));
         status = false;
     }else{
         status = true;

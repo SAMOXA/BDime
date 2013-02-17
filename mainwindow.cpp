@@ -18,7 +18,7 @@ MainWindow::~MainWindow()
 void MainWindow::SLOTaddPrice()
 {
     QString fileName;
-    fileName = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Укажите файл с прайсом"),"","csv (*.csv)");
+    fileName = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("РЈРєР°Р¶РёС‚Рµ С„Р°Р№Р» СЃ РїСЂР°Р№СЃРѕРј"),"","csv (*.csv)");
     if(fileName != ""){
         emit SIGNALaddPrice(fileName);
     }

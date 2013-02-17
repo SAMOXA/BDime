@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
     QObject::connect(&parserManager, SIGNAL(SIGNALsetVendor(QString)), &dbManager, SLOT(SLOTsetVendor(QString)));
     QObject::connect(w.model, SIGNAL(SIGNALgetItems(QStringList)), &dbManager, SLOT(SLOTgetItems(QStringList)));
     QObject::connect(&dbManager, SIGNAL(SIGNALtoModel(QString,QString,float,int)), w.model, SLOT(SLOTtoModel(QString,QString,float,int)));
+    QObject::connect(w.model, SIGNAL(SIGNALgetVendors()), &dbManager, SLOT(SLOTgetVendors()));
+    QObject::connect(&dbManager, SIGNAL(SIGNALvendor(int,QString)), w.model, SLOT(SLOTvendor(int,QString)));
     //QObject::connect(&dbManager, SIGNAL(SIGNALrepaint()), &w, SLOT(SLOTrepaint()));
     w.show();
     return a.exec();

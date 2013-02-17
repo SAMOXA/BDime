@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtSql>
+#include <QMap>
 #include "tablerow.h"
 
 class dbDriver : public QObject
@@ -23,11 +24,13 @@ signals:
     void SIGNALdbMessage(const QString &);
     void SIGNALtoModel(const QString, QString, float, int);
     void SIGNALrepaint();
+    void SIGNALvendor(int, QString);
 public slots:
     //int addEvaluation();
     void SLOTaddItem(const QString &art, const QString &desc, const float price);
     void SLOTsetVendor(const QString &vendorName);
     void SLOTgetItems(const QStringList list);
+    void SLOTgetVendors();
 private:
     bool status;
     QSqlDatabase dbase;

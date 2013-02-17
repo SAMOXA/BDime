@@ -38,7 +38,7 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
                 QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()));
 
                 while(tempIter.key() == keysModelData.at(index.row())){
-                    temp << QString(tempIter.value().vendorName);
+                    temp << vendors[tempIter.value().vendorName];
                     tempIter++;
                     if(tempIter == modelData.end()){
                         break;
@@ -60,7 +60,8 @@ bool tempTableModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         if(index.column()==3){
-            tableRow temp(QString(""), 0, value.toInt());
+            qDebug() << value;
+            tableRow temp(QString(""), 0, vendors.key(value.toString()));
             int count = modelData.remove(keysModelData.at(index.row()), temp);
             qDebug() << count;
         }
@@ -105,6 +106,7 @@ Qt::ItemFlags tempTableModel::flags(const QModelIndex &index) const
 
 void tempTableModel::SLOTgetItems()
 {
+    emit SIGNALgetVendors();
     QClipboard *clipboard = QApplication::clipboard();
     QString text(clipboard->text());
     QTextStream stream(&text);
@@ -128,4 +130,9 @@ void tempTableModel::SLOTtoModel(const QString art, QString desc, float price, i
     }
     tableRow temp(desc, price, vendorId);
     modelData.insert(art, temp);
+}
+
+void tempTableModel::SLOTvendor(int id, QString name)
+{
+    vendors.insert(id, name);
 }

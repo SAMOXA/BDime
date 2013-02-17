@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new tempTableModel;
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
-
+    ui->tableView->setItemDelegate(new vendorDelegate);
+    ui->tableView->verticalHeader()->setDefaultSectionSize(50);
     QObject::connect(ui->addPriceButton, SIGNAL(clicked()), this, SLOT(SLOTaddPrice()));
     QObject::connect(ui->getClipboardButton, SIGNAL(clicked()), model, SLOT(SLOTgetItems()));
 }

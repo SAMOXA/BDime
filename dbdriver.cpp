@@ -121,7 +121,6 @@ void dbDriver::SLOTsetVendor(const QString &vendorName)
 
 void dbDriver::SLOTgetItems(const QStringList list)
 {
-    qDebug() << "SLOTgetItems";
     QSqlQuery a_query;
     QString str;
     QStringList::const_iterator iter = list.begin();
@@ -142,4 +141,17 @@ void dbDriver::SLOTgetItems(const QStringList list)
         }
     }
     //emit SIGNALrepaint();
+}
+
+void dbDriver::SLOTgetVendors()
+{
+    QSqlQuery a_query;
+    QString str;
+    str = "SELECT * FROM vendors";
+    a_query.exec(str);
+    QSqlRecord rec;
+    rec = a_query.record();
+    while(a_query.next()){
+        emit SIGNALvendor(a_query.value(rec.indexOf("id")).toInt(), a_query.value(rec.indexOf("name")).toString());
+    }
 }

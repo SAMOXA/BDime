@@ -16,13 +16,15 @@ SOURCES += main.cpp\
     parser.cpp \
     dialogs.cpp \
     temptablemodel.cpp \
-    tablerow.cpp
+    tablerow.cpp \
+    vendordelegate.cpp
 
 HEADERS  += mainwindow.h \
     dbdriver.h \
     parser.h \
     dialogs.h \
     temptablemodel.h \
-    tablerow.h
+    tablerow.h \
+    vendordelegate.h
 
 FORMS    += mainwindow.ui

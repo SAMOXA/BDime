@@ -6,6 +6,7 @@
 #include <QClipboard>
 #include <QDebug>
 #include "temptablemodel.h"
+#include "vendordelegate.h"
 
 namespace Ui {
 class MainWindow;

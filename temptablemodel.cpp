@@ -49,7 +49,7 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
             }
             if(modelData.count(keysModelData.at(index.row())) < 1)
                 return QVariant(QString::fromUtf8("Артикль не найден"));
-            return QVariant(modelData.find(keysModelData.at(index.row())).value().vendorName);
+            return QVariant(vendors[modelData.find(keysModelData.at(index.row())).value().vendorName]);
         }
         return QVariant();
     }
@@ -60,10 +60,10 @@ bool tempTableModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         if(index.column()==3){
-            qDebug() << value;
             tableRow temp(QString(""), 0, vendors.key(value.toString()));
-            int count = modelData.remove(keysModelData.at(index.row()), temp);
-            qDebug() << count;
+            tableRow temp1 = modelData.find(keysModelData.at(index.row()), temp).value();
+            modelData.remove(keysModelData.at(index.row()));
+            modelData.insert(keysModelData.at(index.row()), temp1);
         }
         return true;
     }

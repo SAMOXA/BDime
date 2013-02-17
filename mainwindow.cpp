@@ -9,6 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new tempTableModel;
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
+    ui->tableView->setColumnWidth(0, 100);
+    ui->tableView->setColumnWidth(1, 500);
+    ui->tableView->setColumnWidth(2, 100);
+    ui->tableView->setColumnWidth(3, 200);
     ui->tableView->setItemDelegate(new vendorDelegate);
     ui->tableView->verticalHeader()->setDefaultSectionSize(50);
     QObject::connect(ui->addPriceButton, SIGNAL(clicked()), this, SLOT(SLOTaddPrice()));

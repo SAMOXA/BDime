@@ -53,6 +53,22 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
         }
         return QVariant();
     }
+    if(role == Qt::ForegroundRole){
+        if(index.column() == 1){
+            if(modelData.count(keysModelData.at(index.row())) > 1)
+                return QVariant(QBrush (QColor(Qt::red)));
+            if(modelData.count(keysModelData.at(index.row())) < 1)
+                return QVariant(QBrush (QColor(Qt::blue)));
+            return QVariant(QBrush (QColor(Qt::black)));
+        }
+        if(index.column() == 2){
+            if(modelData.count(keysModelData.at(index.row())) > 1)
+                return QVariant(QBrush (QColor(Qt::red)));
+            if(modelData.count(keysModelData.at(index.row())) < 1)
+                return QVariant(QBrush (QColor(Qt::blue)));
+            return QVariant(QBrush (QColor(Qt::black)));
+        }
+    }
     return QVariant();
 }
 

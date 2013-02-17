@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QTextStream>
+#include <QBrush>
 #include <QDebug>
 #include "tablerow.h"
 

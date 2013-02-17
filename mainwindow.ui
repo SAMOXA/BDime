@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Р”РѕР±Р°РІРёС‚СЊ РїСЂР°Р№СЃ</string>
+     <string>Добавить прайс</string>
     </property>
    </widget>
    <widget class="QTableView" name="tableView">
@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Р’СЃС‚Р°РІРєР° РёР· Р±СѓС„РµСЂР° РѕР±РјРµРЅР°</string>
+     <string>Вставить из буфера обмена</string>
     </property>
    </widget>
   </widget>

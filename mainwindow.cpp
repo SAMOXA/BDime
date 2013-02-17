@@ -6,8 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    model = new tempTableModel;
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
+
     QObject::connect(ui->addPriceButton, SIGNAL(clicked()), this, SLOT(SLOTaddPrice()));
-    QObject::connect(ui->getClipboardButton, SIGNAL(clicked()), this, SLOT(SLOTgetArts()));
+    QObject::connect(ui->getClipboardButton, SIGNAL(clicked()), model, SLOT(SLOTgetItems()));
 }
 
 MainWindow::~MainWindow()
@@ -28,4 +32,9 @@ void MainWindow::SLOTgetArts()
 {
     QClipboard *clipboard = QApplication::clipboard();
     qDebug() << clipboard->text();
+}
+
+void MainWindow::SLOTrepaint()
+{
+    ui->tableView->repaint();
 }

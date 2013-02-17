@@ -15,7 +15,7 @@ void parser::SLOTparse(const QString &path)
     QFile priceList(path);
     QString line;
     if (!priceList.open(QIODevice::ReadOnly | QIODevice::Text)){
-
+        qDebug() << "LOL";
     }
     QString vendorName = dialogsManager->getText();
     emit SIGNALsetVendor(vendorName);
@@ -23,7 +23,7 @@ void parser::SLOTparse(const QString &path)
     line = stream.readLine();
     QStringList fields = line.split(";");
     QString additionalLine;
-    while (!priceList.atEnd()) {
+    while (!stream.atEnd()) {
         line = stream.readLine();
         if(line.count(';')<2){
             additionalLine = stream.readLine();

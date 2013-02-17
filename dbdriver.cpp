@@ -10,7 +10,7 @@ dbDriver::dbDriver(QObject *parent) :
 void dbDriver::init(const QString &path)
 {
     if(! QFile::exists(path)){
-        emit SIGNALdbMessage(QString::fromLocal8Bit("Была создана новая база данных"));
+        emit SIGNALdbMessage(QString::fromUtf8("Была создана новая база данных"));
     }else{
         /*
         QMessageBox msgBox;
@@ -36,7 +36,7 @@ void dbDriver::init(const QString &path)
     dbase.setDatabaseName(path);
     bool globalError = false;
     if(!dbase.open()){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при открытии базы данных") + dbase.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при открытии базы данных") + dbase.lastError().text());
         globalError = true;
     }
     QSqlQuery a_query;
@@ -46,11 +46,11 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при создании таблицы vendors") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы vendors") + a_query.lastError().text());
         globalError = true;
     }
     if(!a_query.exec("PRAGMA foreign_keys = ON;")){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при установке связных ключей") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при установке связных ключей") + a_query.lastError().text());
         globalError = true;
     }
     str = "CREATE TABLE IF NOT EXISTS main ("
@@ -64,7 +64,7 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка при создании таблицы main") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы main") + a_query.lastError().text());
         globalError = true;
     }
     dbModel = new QSqlRelationalTableModel;
@@ -73,7 +73,7 @@ void dbDriver::init(const QString &path)
     dbModel->setRelation(4, QSqlRelation("vendors", "id", "name"));
     dbModel->select();
     if(globalError){
-        emit SIGNALdbError(QString::fromLocal8Bit("Ощибка базы данных"));
+        emit SIGNALdbError(QString::fromUtf8("Ощибка базы данных"));
         status = false;
     }else{
         status = true;
@@ -117,4 +117,29 @@ void dbDriver::SLOTsetVendor(const QString &vendorName)
     rec = a_query.record();
     a_query.next();
     vendorId = a_query.value(rec.indexOf("id")).toInt();
+}
+
+void dbDriver::SLOTgetItems(const QStringList list)
+{
+    qDebug() << "SLOTgetItems";
+    QSqlQuery a_query;
+    QString str;
+    QStringList::const_iterator iter = list.begin();
+    QSqlRecord rec;
+    bool flag;
+    for(;iter!=list.end();iter++){
+        str = "SELECT * FROM main WHERE art = '%1';";
+        str = str.arg(*iter);
+        a_query.exec(str);
+        rec = a_query.record();
+        flag = false;
+        while(a_query.next()){
+            flag = true;
+            emit SIGNALtoModel(a_query.value(rec.indexOf("art")).toString(), a_query.value(rec.indexOf("desc")).toString(), a_query.value(rec.indexOf("price")).toFloat(), a_query.value(rec.indexOf("vendor_id")).toInt());
+        }
+        if(!flag){
+            emit SIGNALtoModel(a_query.value(rec.indexOf("art")).toString(), QString(""), 0, 0);
+        }
+    }
+    //emit SIGNALrepaint();
 }

@@ -3,10 +3,10 @@
 tempTableModel::tempTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    header_data << QString::fromLocal8Bit("РђСЂС‚РёРєР»СЊ")
-                << QString::fromLocal8Bit("РћРїРёСЃР°РЅРёРµ")
-                << QString::fromLocal8Bit("Р¦РµРЅР°")
-                << QString::fromLocal8Bit("РџСЂРѕРёР·РІРѕРґРёС‚РµР»СЊ");
+    header_data << QString::fromLocal8Bit("Артикль")
+                << QString::fromLocal8Bit("Описание")
+                << QString::fromLocal8Bit("Цена")
+                << QString::fromLocal8Bit("Имя производителя");
 }
 
 QVariant tempTableModel::data(const QModelIndex &index, int role) const
@@ -20,16 +20,16 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
             return keysModelData.at(index.row());
         if(index.column() == 1){
             if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QString::fromLocal8Bit("<font color='red'><b>РљРѕРЅС„Р»РёРєС‚</b></font>"));
+                return QVariant(QString::fromLocal8Bit("<font color='red'><b>Конфликт</b></font>"));
             if(modelData.count(keysModelData.at(index.row())) < 1)
-                return QVariant(QString::fromLocal8Bit("<b>РђСЂС‚РёРєР»СЊ РЅРµ РЅР°Р№РґРµРЅ</b>"));
+                return QVariant(QString::fromLocal8Bit("<b>Артикль не найден</b>"));
             return QVariant(modelData.find(keysModelData.at(index.row())).value().desc);
         }
         if(index.column() == 2){
             if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QString::fromLocal8Bit("<font color='red'><b>РљРѕРЅС„Р»РёРєС‚</b></font>"));
+                return QVariant(QString::fromLocal8Bit("<font color='red'><b>Конфликт</b></font>"));
             if(modelData.count(keysModelData.at(index.row())) < 1)
-                return QVariant(QString::fromLocal8Bit("<b>РђСЂС‚РёРєР»СЊ РЅРµ РЅР°Р№РґРµРЅ</b>"));
+                return QVariant(QString::fromLocal8Bit("<b>Артикль не найден</b>"));
             return QVariant(modelData.find(keysModelData.at(index.row())).value().price);
         }
         if(index.column() == 3){
@@ -42,7 +42,7 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
                 return QVariant(temp);
             }
             if(modelData.count(keysModelData.at(index.row())) < 1)
-                return QVariant(QString::fromLocal8Bit("<b>РђСЂС‚РёРєР»СЊ РЅРµ РЅР°Р№РґРµРЅ</b>"));
+                return QVariant(QString::fromLocal8Bit("<b>Артикль не найден</b>"));
             return QVariant(modelData.find(keysModelData.at(index.row())).value().vendorName);
         }
     }

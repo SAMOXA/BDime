@@ -84,25 +84,12 @@ void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float 
 {
     QSqlQuery a_query;
     QString str;
-    str = "SELECT vendor_id FROM main WHERE art = '%1' AND vendor_id = '%2';";
-    str = str.arg(art).arg(vendorId);
+    str = "INSERT OR REPLACE INTO main (id, art, desc, price, vendor_id) VALUES (NULL, '%1', '%2', '%3', '%4')";
+    str = str.arg(art).arg(desc).arg(price).arg(vendorId);
     a_query.exec(str);
-    if(!a_query.next()){
-        str = "INSERT INTO main (id, art, desc, price, vendor_id) VALUES (NULL, '%1', '%2', '%3', '%4')";
-        str = str.arg(art).arg(desc).arg(price).arg(vendorId);
-        a_query.exec(str);
-        str = QString::fromUtf8("Обновлён артикль %1 - %2");
-        str = str.arg(art).arg(desc);
-        emit SIGNALdbMessage(str);
-    }else{
-        str = "UPDATE main SET desc = '%1', price = '%2' WHERE art = '%3' AND vendor_id = '%4';";
-        str = str.arg(desc).arg(price).arg(art).arg(vendorId);
-        a_query.exec(str);
-        str = QString::fromUtf8("Добавлен артикль %1 - %2");
-        str = str.arg(art).arg(desc);
-        emit SIGNALdbMessage(str);
-    }
-
+    str = QString::fromUtf8("Добавлен артикль %1 - %2");
+    str = str.arg(art).arg(desc);
+    emit SIGNALdbMessage(str);
 }
 
 void dbDriver::SLOTsetVendor(const QString &vendorName)

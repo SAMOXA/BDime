@@ -91,11 +91,18 @@ void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float 
         str = "INSERT INTO main (id, art, desc, price, vendor_id) VALUES (NULL, '%1', '%2', '%3', '%4')";
         str = str.arg(art).arg(desc).arg(price).arg(vendorId);
         a_query.exec(str);
+        str = QString::fromUtf8("Обновлён артикль %1 - %2");
+        str = str.arg(art).arg(desc);
+        emit SIGNALdbMessage(str);
     }else{
         str = "UPDATE main SET desc = '%1', price = '%2' WHERE art = '%3' AND vendor_id = '%4';";
         str = str.arg(desc).arg(price).arg(art).arg(vendorId);
         a_query.exec(str);
+        str = QString::fromUtf8("Добавлен артикль %1 - %2");
+        str = str.arg(art).arg(desc);
+        emit SIGNALdbMessage(str);
     }
+
 }
 
 void dbDriver::SLOTsetVendor(const QString &vendorName)
@@ -140,7 +147,6 @@ void dbDriver::SLOTgetItems(const QStringList list)
             emit SIGNALtoModel(a_query.value(rec.indexOf("art")).toString(), QString(""), 0, 0);
         }
     }
-    //emit SIGNALrepaint();
 }
 
 void dbDriver::SLOTgetVendors()

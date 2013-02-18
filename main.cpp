@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    parser parserManager;
+    parser parserManager(&a);
     dialogs dialogsManager;
     parserManager.setDialogManager(&dialogsManager);
     dbDriver dbManager;
@@ -20,7 +20,11 @@ int main(int argc, char *argv[])
     QObject::connect(&dbManager, SIGNAL(SIGNALtoModel(QString,QString,float,int)), w.model, SLOT(SLOTtoModel(QString,QString,float,int)));
     QObject::connect(w.model, SIGNAL(SIGNALgetVendors()), &dbManager, SLOT(SLOTgetVendors()));
     QObject::connect(&dbManager, SIGNAL(SIGNALvendor(int,QString)), w.model, SLOT(SLOTvendor(int,QString)));
-    //QObject::connect(&dbManager, SIGNAL(SIGNALrepaint()), &w, SLOT(SLOTrepaint()));
+    QObject::connect(&dbManager, SIGNAL(SIGNALdbMessage(QString)), &w, SLOT(SLOTmsg(QString)));
+    QObject::connect(&dbManager, SIGNAL(SIGNALdbError(QString)), &w, SLOT(SLOTerrorMsg(QString)));
+    QObject::connect(&parserManager, SIGNAL(SIGNALstartParsing(int)), &w, SLOT(SLOTstartParsing(int)));
+    QObject::connect(&parserManager, SIGNAL(SIGNALuodateLabelCount(int,int)), &w, SLOT(SLOTuodateLabelCount(int,int)));
+    QObject::connect(&parserManager, SIGNAL(SIGNALupDateProgressBar()), &w, SLOT(SLOTupDateProgressBar()));
     w.show();
     return a.exec();
 }

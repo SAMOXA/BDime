@@ -30,6 +30,11 @@ public slots:
     void SLOTaddPrice();
     void SLOTgetArts();
     void SLOTrepaint();
+    void SLOTerrorMsg(const QString &);
+    void SLOTmsg(const QString &);
+    void SLOTuodateLabelCount(int n, int N);
+    void SLOTupDateProgressBar();
+    void SLOTstartParsing(int);
 };
 
 #endif // MAINWINDOW_H

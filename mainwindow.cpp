@@ -43,3 +43,33 @@ void MainWindow::SLOTrepaint()
 {
     ui->tableView->repaint();
 }
+
+void MainWindow::SLOTerrorMsg(const QString &str)
+{
+    ui->msgList->append("<font color='RED'><b>" + str + "</b></font>");
+}
+
+void MainWindow::SLOTmsg(const QString &str)
+{
+    ui->msgList->append(str);
+}
+
+void MainWindow::SLOTuodateLabelCount(int n, int N)
+{
+    QString str = QString::fromUtf8("Колличество обработанных записей %1 из %2");
+    str = str.arg(n).arg(N);
+    ui->recordCountLabel->setText(str);
+}
+
+void MainWindow::SLOTupDateProgressBar()
+{
+    ui->parserProgressBar->setValue(ui->parserProgressBar->value() + 1);
+}
+
+void MainWindow::SLOTstartParsing(int n)
+{
+    ui->parserProgressBar->setValue(1);
+    QString str = QString::fromUtf8("Колличество обработанных записей %1 из %2");
+    str = str.arg(0).arg(n);
+    ui->recordCountLabel->setText(str);
+}

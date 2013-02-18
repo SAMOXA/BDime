@@ -12,12 +12,6 @@ class dbDriver : public QObject
 public:
     explicit dbDriver(QObject *parent = 0);
     void init(const QString &path);
-    //int loadSettingsFromFile(QString configPath);
-    //int getCompetitionList();
-    //int getCourtsList();
-    //int getCompetitionStat(QString name);
-    //int getCompetitionStat(int id);
-    //int getAllStat();
     QSqlRelationalTableModel *dbModel;
 signals:
     void SIGNALdbError(const QString &);
@@ -26,7 +20,6 @@ signals:
     void SIGNALrepaint();
     void SIGNALvendor(int, QString);
 public slots:
-    //int addEvaluation();
     void SLOTaddItem(const QString &art, const QString &desc, const float price);
     void SLOTsetVendor(const QString &vendorName);
     void SLOTgetItems(const QStringList list);
@@ -35,6 +28,8 @@ private:
     bool status;
     QSqlDatabase dbase;
     int vendorId;
+    int numberOfInserts;
+    QString multipleQuery;
 };
 
 #endif // DBDRIVER_H

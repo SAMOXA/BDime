@@ -5,6 +5,9 @@ dbDriver::dbDriver(QObject *parent) :
 {
     dbase = QSqlDatabase::addDatabase("QSQLITE");
     status = false;
+    numberOfInserts = 0;
+    multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+                        "SELECT '%1', '%2', '%3', '%4' ";
 }
 
 void dbDriver::init(const QString &path)
@@ -36,7 +39,7 @@ void dbDriver::init(const QString &path)
     dbase.setDatabaseName(path);
     bool globalError = false;
     if(!dbase.open()){
-        emit SIGNALdbError(QString::fromUtf8("Ощибка при открытии базы данных") + dbase.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при открытии базы данных ") + dbase.lastError().text());
         globalError = true;
     }
     QSqlQuery a_query;
@@ -46,11 +49,11 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы vendors") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы vendors ") + a_query.lastError().text());
         globalError = true;
     }
     if(!a_query.exec("PRAGMA foreign_keys = ON;")){
-        emit SIGNALdbError(QString::fromUtf8("Ощибка при установке связных ключей") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при установке связных ключей ") + a_query.lastError().text());
         globalError = true;
     }
     str = "CREATE TABLE IF NOT EXISTS main ("
@@ -64,7 +67,12 @@ void dbDriver::init(const QString &path)
     a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
-        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы main") + a_query.lastError().text());
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы main ") + a_query.lastError().text());
+        globalError = true;
+    }
+    str = "CREATE INDEX main_id_index on main(id)";
+    if(!a_query.exec(str)){
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при создании индекса ") + a_query.lastError().text());
         globalError = true;
     }
     dbModel = new QSqlRelationalTableModel;
@@ -82,14 +90,29 @@ void dbDriver::init(const QString &path)
 
 void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float price)
 {
-    QSqlQuery a_query;
     QString str;
-    str = "INSERT OR REPLACE INTO main (id, art, desc, price, vendor_id) VALUES (NULL, '%1', '%2', '%3', '%4')";
-    str = str.arg(art).arg(desc).arg(price).arg(vendorId);
-    a_query.exec(str);
-    str = QString::fromUtf8("Добавлен артикль %1 - %2");
-    str = str.arg(art).arg(desc);
-    emit SIGNALdbMessage(str);
+    if(numberOfInserts < 400){
+        if(numberOfInserts == 0){
+            multipleQuery = multipleQuery.arg(art).arg(desc).arg(price).arg(vendorId);
+            numberOfInserts++;
+        }else{
+            str = "UNION ALL SELECT '%1', '%2', '%3', '%4' ";
+            str = str.arg(art).arg(desc).arg(price).arg(vendorId);
+            multipleQuery += str;
+            numberOfInserts++;
+        }
+    }else{
+        QSqlQuery a_query;
+        str = "UNION ALL SELECT '%1', '%2', '%3', '%4'";
+        str = str.arg(art).arg(desc).arg(price).arg(vendorId);
+        multipleQuery += str;
+        if(!a_query.exec(multipleQuery)){
+            emit SIGNALdbError(QString::fromUtf8("Ощибка при добавлении данных ") + a_query.lastError().text());
+        }
+        multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+                            "SELECT '%1', '%2', '%3', '%4' ";
+        numberOfInserts = 0;
+    }
 }
 
 void dbDriver::SLOTsetVendor(const QString &vendorName)

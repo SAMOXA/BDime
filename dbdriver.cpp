@@ -15,6 +15,7 @@ void dbDriver::init(const QString &path)
     if(! QFile::exists(path)){
         emit SIGNALdbMessage(QString::fromUtf8("Была создана новая база данных"));
     }else{
+        emit SIGNALdbMessage(QString::fromUtf8("База данных была перезаписана"));
         /*
         QMessageBox msgBox;
         msgBox.setWindowTitle(QString::fromLocal8Bit("Перезапись БД"));
@@ -91,6 +92,9 @@ void dbDriver::init(const QString &path)
 void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float price)
 {
     QString str;
+    str = QString::fromUtf8("Добавлен артикль %1 - %2");
+    str = str.arg(art).arg(desc);
+    emit SIGNALdbMessage(str);
     if(numberOfInserts < 400){
         if(numberOfInserts == 0){
             multipleQuery = multipleQuery.arg(art).arg(desc).arg(price).arg(vendorId);
@@ -151,10 +155,10 @@ void dbDriver::SLOTgetItems(const QStringList list)
         flag = false;
         while(a_query.next()){
             flag = true;
-            emit SIGNALtoModel(a_query.value(rec.indexOf("art")).toString(), a_query.value(rec.indexOf("desc")).toString(), a_query.value(rec.indexOf("price")).toFloat(), a_query.value(rec.indexOf("vendor_id")).toInt());
+            emit SIGNALtoModel(*iter, a_query.value(rec.indexOf("desc")).toString(), a_query.value(rec.indexOf("price")).toFloat(), a_query.value(rec.indexOf("vendor_id")).toInt());
         }
         if(!flag){
-            emit SIGNALtoModel(a_query.value(rec.indexOf("art")).toString(), QString(""), 0, 0);
+            emit SIGNALtoModel(*iter, QString(""), 0, 0);
         }
     }
 }
@@ -170,4 +174,15 @@ void dbDriver::SLOTgetVendors()
     while(a_query.next()){
         emit SIGNALvendor(a_query.value(rec.indexOf("id")).toInt(), a_query.value(rec.indexOf("name")).toString());
     }
+}
+
+void dbDriver::SLOTfinalAdding()
+{
+    QSqlQuery a_query;
+    if(!a_query.exec(multipleQuery)){
+        emit SIGNALdbError(QString::fromUtf8("Ощибка при добавлении данных ") + a_query.lastError().text());
+    }
+    multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+                        "SELECT '%1', '%2', '%3', '%4' ";
+    numberOfInserts = 0;
 }

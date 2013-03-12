@@ -5,7 +5,9 @@ tempTableModel::tempTableModel(QObject *parent) :
 {
     header_data << QString::fromUtf8("Артикль")
                 << QString::fromUtf8("Описание")
+                << QString::fromUtf8("Колличество")
                 << QString::fromUtf8("Цена")
+                << QString::fromUtf8("Сумма")
                 << QString::fromUtf8("Имя производителя");
 }
 
@@ -19,55 +21,102 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
         if(index.column() == 0)
             return keysModelData.at(index.row());
         if(index.column() == 1){
-            if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QString::fromUtf8("Конфликт"));
+            if(modelData.count(keysModelData.at(index.row())) > 1){
+                tableRow temp(true);
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), temp);
+                if(tempIter == modelData.end())
+                    return QVariant(QString::fromUtf8("Конфликт"));
+                else
+                    return QVariant(tempIter.value().desc);
+            }
             if(modelData.count(keysModelData.at(index.row())) < 1)
                 return QVariant(QString::fromUtf8("Артикль не найден"));
             return QVariant(modelData.find(keysModelData.at(index.row())).value().desc);
         }
         if(index.column() == 2){
-            if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QString::fromUtf8("Конфликт"));
+            if(modelData.count(keysModelData.at(index.row())) > 1){
+                tableRow temp(true);
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), temp);
+                if(tempIter == modelData.end())
+                    return QVariant(QString::fromUtf8("Конфликт"));
+                else
+                    return QVariant(tempIter.value().count);
+            }
+            if(modelData.count(keysModelData.at(index.row())) < 1)
+                return QVariant(QString::fromUtf8("Артикль не найден"));
+            return QVariant(modelData.find(keysModelData.at(index.row())).value().count);
+        }
+        if(index.column() == 3){
+            if(modelData.count(keysModelData.at(index.row())) > 1){
+                tableRow temp(true);
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), temp);
+                if(tempIter == modelData.end())
+                    return QVariant(QString::fromUtf8("Конфликт"));
+                else
+                    return QVariant(tempIter.value().price);
+            }
             if(modelData.count(keysModelData.at(index.row())) < 1)
                 return QVariant(QString::fromUtf8("Артикль не найден"));
             return QVariant(modelData.find(keysModelData.at(index.row())).value().price);
         }
-        if(index.column() == 3){
+        if(index.column() == 4){
             if(modelData.count(keysModelData.at(index.row())) > 1){
-                QStringList temp;
-                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()));
-
-                while(tempIter.key() == keysModelData.at(index.row())){
-                    temp << vendors[tempIter.value().vendorName];
-                    tempIter++;
-                    if(tempIter == modelData.end()){
-                        break;
-                    }
-                }
-                //return QVariant(QString::fromUtf8("Конфликт"));
-                return QVariant(temp);
+                tableRow temp(true);
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), temp);
+                if(tempIter == modelData.end())
+                    return QVariant(QString::fromUtf8("Конфликт"));
+                else
+                    return QVariant(tempIter.value().price * tempIter.value().count);
             }
             if(modelData.count(keysModelData.at(index.row())) < 1)
                 return QVariant(QString::fromUtf8("Артикль не найден"));
-            return QVariant(vendors[modelData.find(keysModelData.at(index.row())).value().vendorName]);
+            return QVariant(modelData.find(keysModelData.at(index.row())).value().price * modelData.find(keysModelData.at(index.row())).value().count);
+        }
+        if(index.column() == 5){
+            if(role == Qt::DisplayRole){
+                tableRow tempRow(true);
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), tempRow);
+                if(tempIter == modelData.end()){
+                    return QVariant();
+                }else{
+                    return QVariant(vendors[tempIter.value().vendorName]);
+                }
+            }
+            if(role == Qt::EditRole){
+                QStringList temp;
+                QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()));
+                if(tempIter != modelData.end()){
+                    tempIter = modelData.find(keysModelData.at(index.row()));
+                    while(tempIter.key() == keysModelData.at(index.row())){
+                        temp << vendors[tempIter.value().vendorName];
+                        tempIter++;
+                        if(tempIter == modelData.end() || tempIter.key() != keysModelData.at(index.row())){
+                            break;
+                        }
+                    }
+                    return QVariant(temp);
+                }else{
+                    return QVariant();
+                }
+            }
         }
         return QVariant();
     }
     if(role == Qt::ForegroundRole){
-        if(index.column() == 1){
-            if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QBrush (QColor(Qt::red)));
-            if(modelData.count(keysModelData.at(index.row())) < 1)
-                return QVariant(QBrush (QColor(Qt::blue)));
-            return QVariant(QBrush (QColor(Qt::black)));
+        tableRow tempRow(true);
+        QMap <QString, tableRow>::const_iterator tempIter = modelData.find(keysModelData.at(index.row()), tempRow);
+        QBrush brush;
+        if(tempIter == modelData.end()){
+            tempIter = modelData.find(keysModelData.at(index.row()));
+            if(tempIter == modelData.end()){
+                brush = QColor(Qt::blue);
+            }else{
+                brush = QColor(Qt::red);
+            }
+        }else{
+            brush = QColor(Qt::black);
         }
-        if(index.column() == 2){
-            if(modelData.count(keysModelData.at(index.row())) > 1)
-                return QVariant(QBrush (QColor(Qt::red)));
-            if(modelData.count(keysModelData.at(index.row())) < 1)
-                return QVariant(QBrush (QColor(Qt::blue)));
-            return QVariant(QBrush (QColor(Qt::black)));
-        }
+        return QVariant(brush);
     }
     return QVariant();
 }
@@ -75,11 +124,28 @@ QVariant tempTableModel::data(const QModelIndex &index, int role) const
 bool tempTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (index.isValid() && role == Qt::EditRole) {
-        if(index.column()==3){
-            tableRow temp(QString(""), 0, vendors.key(value.toString()));
-            tableRow temp1 = modelData.find(keysModelData.at(index.row()), temp).value();
-            modelData.remove(keysModelData.at(index.row()));
-            modelData.insert(keysModelData.at(index.row()), temp1);
+        if(index.column() == 2){
+            tableRow temp(vendors.key(keysModelData.at(index.row())), true);
+            QMap <QString, tableRow>::iterator tempIter = modelData.find(keysModelData.at(index.row()), temp);
+            if(tempIter == modelData.end()){
+                return false;
+            }else{
+                tempIter.value().count = value.toInt();
+                qDebug() << tempIter.value().count;
+            }
+        }
+        if(index.column()==5){
+            QMap <QString, tableRow>::iterator tempIter = modelData.find(keysModelData.at(index.row()));
+            while(tempIter.key() == keysModelData.at(index.row())){
+                tempIter.value().selected = false;
+                if(tempIter.value().vendorName == vendors.key(value.toString())){
+                    tempIter.value().selected = true;
+                }
+                tempIter++;
+                if(tempIter == modelData.end()){
+                    break;
+                }
+            }
         }
         return true;
     }
@@ -93,12 +159,12 @@ int tempTableModel::rowCount(const QModelIndex &parent) const
 
 int tempTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 4;
+    return 6;
 }
 
 int tempTableModel::columnCount() const
 {
-    return 4;
+    return 6;
 }
 
 QVariant tempTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -146,6 +212,7 @@ void tempTableModel::SLOTtoModel(const QString art, QString desc, float price, i
     }
     tableRow temp(desc, price, vendorId);
     modelData.insert(art, temp);
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 void tempTableModel::SLOTvendor(int id, QString name)

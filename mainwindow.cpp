@@ -9,10 +9,12 @@ MainWindow::MainWindow(QWidget *parent) :
     model = new tempTableModel;
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
-    ui->tableView->setColumnWidth(0, 100);
-    ui->tableView->setColumnWidth(1, 500);
+    ui->tableView->setColumnWidth(0, 70);
+    ui->tableView->setColumnWidth(1, 400);
     ui->tableView->setColumnWidth(2, 100);
-    ui->tableView->setColumnWidth(3, 200);
+    ui->tableView->setColumnWidth(3, 100);
+    ui->tableView->setColumnWidth(4, 100);
+    ui->tableView->setColumnWidth(5, 150);
     ui->tableView->setItemDelegate(new vendorDelegate);
     ui->tableView->verticalHeader()->setDefaultSectionSize(50);
     QObject::connect(ui->addPriceButton, SIGNAL(clicked()), this, SLOT(SLOTaddPrice()));
@@ -36,7 +38,6 @@ void MainWindow::SLOTaddPrice()
 void MainWindow::SLOTgetArts()
 {
     QClipboard *clipboard = QApplication::clipboard();
-    qDebug() << clipboard->text();
 }
 
 void MainWindow::SLOTrepaint()
@@ -72,4 +73,9 @@ void MainWindow::SLOTstartParsing(int n)
     QString str = QString::fromUtf8("Колличество обработанных записей %1 из %2");
     str = str.arg(0).arg(n);
     ui->recordCountLabel->setText(str);
+}
+
+void MainWindow::SLOTfinalParsing()
+{
+    ui->parserProgressBar->setValue(0);
 }

@@ -24,6 +24,7 @@ signals:
     void SIGNALuodateLabelCount(int, int);
     void SIGNALupDateProgressBar();
     void SIGNALstartParsing(int);
+    void SIGNALfinalParsing();
 public slots:
     void SLOTparse(const QString &path);
 };

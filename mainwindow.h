@@ -35,6 +35,7 @@ public slots:
     void SLOTuodateLabelCount(int n, int N);
     void SLOTupDateProgressBar();
     void SLOTstartParsing(int);
+    void SLOTfinalParsing();
 };
 
 #endif // MAINWINDOW_H

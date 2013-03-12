@@ -24,6 +24,7 @@ public slots:
     void SLOTsetVendor(const QString &vendorName);
     void SLOTgetItems(const QStringList list);
     void SLOTgetVendors();
+    void SLOTfinalAdding();
 private:
     bool status;
     QSqlDatabase dbase;

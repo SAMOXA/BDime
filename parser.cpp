@@ -59,4 +59,5 @@ void parser::SLOTparse(const QString &path)
         emit SIGNALaddToDb(fields.at(0), fields.at(1), fields.at(2).toFloat());
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
+    emit SIGNALfinalParsing();
 }

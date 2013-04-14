@@ -131,7 +131,6 @@ bool tempTableModel::setData(const QModelIndex &index, const QVariant &value, in
                 return false;
             }else{
                 tempIter.value().count = value.toInt();
-                qDebug() << tempIter.value().count;
             }
         }
         if(index.column()==5){

@@ -1,9 +1,9 @@
 #ifndef DIALOGS_H
 #define DIALOGS_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QString>
-#include <QInputDialog>
+#include <QtWidgets/QInputDialog>
 
 class dialogs : public QWidget
 {

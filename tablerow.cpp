@@ -7,6 +7,7 @@ tableRow::tableRow()
     vendorName = 0;
     selected = false;
     count = 0;
+    sum = 0;
 }
 
 tableRow::tableRow(QString _desc, float _price, int _vendorName)
@@ -16,6 +17,7 @@ tableRow::tableRow(QString _desc, float _price, int _vendorName)
     vendorName = _vendorName;
     selected = false;
     count = 0;
+    sum = 0;
 }
 
 tableRow::tableRow(int _vendorName, bool _selected)
@@ -25,6 +27,7 @@ tableRow::tableRow(int _vendorName, bool _selected)
     vendorName = _vendorName;
     selected = _selected;
     count = 0;
+    sum = 0;
 }
 
 tableRow::tableRow(int _vendorName)
@@ -34,6 +37,7 @@ tableRow::tableRow(int _vendorName)
     vendorName = _vendorName;
     selected = false;
     count = 0;
+    sum = 0;
 }
 
 tableRow::tableRow(bool _selected)
@@ -43,6 +47,7 @@ tableRow::tableRow(bool _selected)
     vendorName = 0;
     selected = _selected;
     count = 0;
+    sum = 0;
 }
 
 bool operator ==(const tableRow &left, const tableRow &right)

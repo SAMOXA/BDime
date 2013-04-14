@@ -56,7 +56,9 @@ void parser::SLOTparse(const QString &path)
         if(fields.at(0) == "" || fields.at(2) == ""){
             continue;
         }
-        emit SIGNALaddToDb(fields.at(0), fields.at(1), fields.at(2).toFloat());
+        QString tempString = fields.at(2);
+        tempString.replace(',', '.');
+        emit SIGNALaddToDb(fields.at(0), fields.at(1), tempString.toFloat());
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
     emit SIGNALfinalParsing();

@@ -1,10 +1,10 @@
 #ifndef VENDORDELEGATE_H
 #define VENDORDELEGATE_H
 
-#include <QItemDelegate>
-#include <QListWidget>
+#include <QtWidgets/QItemDelegate>
+#include <QtWidgets/QListWidget>
 #include <QStringList>
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QDebug>
 
 class vendorDelegate : public QItemDelegate

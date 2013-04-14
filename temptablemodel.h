@@ -6,7 +6,7 @@
 #include <QStringList>
 #include <QMultiMap>
 #include <QClipboard>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QTextStream>
 #include <QBrush>
 #include <QDebug>

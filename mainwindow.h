@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H_BDIME
 #define MAINWINDOW_H_BDIME
 
-#include <QMainWindow>
-#include <QFileDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QFileDialog>
 #include <QClipboard>
 #include <QDebug>
 #include "temptablemodel.h"

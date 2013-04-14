@@ -6,7 +6,7 @@ dbDriver::dbDriver(QObject *parent) :
     dbase = QSqlDatabase::addDatabase("QSQLITE");
     status = false;
     numberOfInserts = 0;
-    multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+    multipleQuery = "INSERT OR REPLACE INTO main ( art, desc, price, vendor_id) "
                         "SELECT '%1', '%2', '%3', '%4' ";
 }
 
@@ -47,7 +47,6 @@ void dbDriver::init(const QString &path)
     QString str;
     bool flag;
     str = "CREATE TABLE IF NOT EXISTS vendors (id INTEGER PRIMARY KEY NOT NULL, name TEXT);";
-    a_query.exec(str);
     flag = a_query.exec(str);
     if(!flag){
         emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы vendors ") + a_query.lastError().text());
@@ -58,15 +57,15 @@ void dbDriver::init(const QString &path)
         globalError = true;
     }
     str = "CREATE TABLE IF NOT EXISTS main ("
-            "id INTEGER PRIMARY KEY NOT NULL, "
             "art TEXT NOT NULL, "
             "desc TEXT, "
-            "price REAL, "
-            "vendor_id INTEGER, "
+            "price REAL NOT NULL, "
+            "vendor_id INTEGER NOT NULL, "
+            "PRIMARY KEY(art, vendor_id),"
             "FOREIGN KEY(vendor_id) REFERENCES vendors(id)"
           ");";
-    a_query.exec(str);
     flag = a_query.exec(str);
+    emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы main ") + a_query.lastError().text());
     if(!flag){
         emit SIGNALdbError(QString::fromUtf8("Ощибка при создании таблицы main ") + a_query.lastError().text());
         globalError = true;
@@ -87,10 +86,32 @@ void dbDriver::init(const QString &path)
     }else{
         status = true;
     }
+    addQuery = new QSqlQuery;
+    //addQuery->prepare("INSERT OR REPLACE INTO main(id, art, desc, price, vendor_id) VALUES(NULL, ?, ?, ?, ?);");
 }
 
 void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float price)
 {
+    /*
+    QString str;
+    QSqlQuery a_query;
+    str = "INSERT OR REPLACE INTO main(art, desc, price, vendor_id) VALUES('%1', '%2', '%3', '%4');";
+    str = str.arg(art).arg(desc).arg(price).arg(vendorId);
+    a_query.exec(str);
+    str = QString::fromUtf8("Добавлен артикль %1 - %2");
+    str = str.arg(art).arg(desc);
+    emit SIGNALdbMessage(str);
+*/
+/*
+    arts << art;
+    descs << desc;
+    prices << price;
+    vendorIds << vendorId;
+    QString str;
+    str = QString::fromUtf8("Добавлен артикль %1 - %2");
+    str = str.arg(art).arg(desc);
+    */
+    qDebug() << price;
     QString str;
     str = QString::fromUtf8("Добавлен артикль %1 - %2");
     str = str.arg(art).arg(desc);
@@ -113,7 +134,7 @@ void dbDriver::SLOTaddItem(const QString &art, const QString &desc, const float 
         if(!a_query.exec(multipleQuery)){
             emit SIGNALdbError(QString::fromUtf8("Ощибка при добавлении данных ") + a_query.lastError().text());
         }
-        multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+        multipleQuery = "INSERT OR REPLACE INTO main( art, desc, price, vendor_id) "
                             "SELECT '%1', '%2', '%3', '%4' ";
         numberOfInserts = 0;
     }
@@ -178,11 +199,18 @@ void dbDriver::SLOTgetVendors()
 
 void dbDriver::SLOTfinalAdding()
 {
+    //addQuery->addBindValue(arts);
+    //addQuery->addBindValue(descs);
+    //addQuery->addBindValue(prices);
+    //addQuery->addBindValue(vendorIds);
+    //if(!addQuery->execBatch()){
+    //    qDebug() << addQuery->lastError();
+   // }
     QSqlQuery a_query;
     if(!a_query.exec(multipleQuery)){
         emit SIGNALdbError(QString::fromUtf8("Ощибка при добавлении данных ") + a_query.lastError().text());
     }
-    multipleQuery = "INSERT INTO main( art, desc, price, vendor_id) "
+    multipleQuery = "INSERT OR REPLACE INTO main( art, desc, price, vendor_id) "
                         "SELECT '%1', '%2', '%3', '%4' ";
     numberOfInserts = 0;
 }

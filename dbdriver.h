@@ -31,6 +31,11 @@ private:
     int vendorId;
     int numberOfInserts;
     QString multipleQuery;
+    QSqlQuery *addQuery;
+    QVariantList arts;
+    QVariantList descs;
+    QVariantList prices;
+    QVariantList vendorIds;
 };
 
 #endif // DBDRIVER_H

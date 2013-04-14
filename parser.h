@@ -6,7 +6,7 @@
 #include <QFile>
 #include <QStringList>
 #include <QChar>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "dialogs.h"
 
 class parser : public QObject

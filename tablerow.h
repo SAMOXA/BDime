@@ -17,6 +17,7 @@ public:
     int vendorName;
     int count;
     bool selected;
+    int sum;
     friend bool operator==(const tableRow& left, const tableRow& right);
     friend QDebug operator <<(QDebug d, const tableRow &data);
     tableRow(bool _selected);
